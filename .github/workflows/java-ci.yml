@@ -21,5 +21,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build with Maven
-      run: mvn clean install
+    # If your backend is in a subfolder (important for labs)
+    - name: Change to backend directory
+      run: cd ./
+
+    # Use Maven Wrapper (required by grader)
+    - name: Build backend with Maven
+      run: ./mvnw clean compile
