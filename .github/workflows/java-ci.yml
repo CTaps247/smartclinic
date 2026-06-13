@@ -1,32 +1,37 @@
 name: Java CI with Maven
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+push:
+branches: ["main"]
+pull_request:
+branches: ["main"]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+runs-on: ubuntu-latest
 
-    steps:
-      # Checkout repository
-      - name: Checkout code
-        uses: actions/checkout@v4
+```
+steps:
+  # Checkout repository
+  - name: Checkout code
+    uses: actions/checkout@v4
 
-      # Set up Java 17
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: "temurin"
-          cache: maven
+  # Set up Java 17 environment
+  - name: Set up JDK 17
+    uses: actions/setup-java@v4
+    with:
+      java-version: "17"
+      distribution: "temurin"
+      cache: maven
 
-      # Build backend
-      - name: Build backend
-        run: mvn clean compile
+  # Build backend application
+  # (Explicit working directory ensures correct module compilation)
+  - name: Build backend
+    working-directory: .
+    run: mvn clean compile
 
-      # Optional: Run tests (safe for grading if tests exist)
-      - name: Run tests
-        run: mvn test
+  # Run unit tests
+  - name: Run tests
+    working-directory: .
+    run: mvn test
+```
