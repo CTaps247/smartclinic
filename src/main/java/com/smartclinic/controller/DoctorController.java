@@ -10,19 +10,33 @@ import java.util.List;
 @RequestMapping("/doctors")
 public class DoctorController {
 
-    private final DoctorService doctorService;
+    private final DoctorService service;
 
-    public DoctorController(DoctorService doctorService) {
-        this.doctorService = doctorService;
+    public DoctorController(DoctorService service) {
+        this.service = service;
     }
 
     @GetMapping
     public List<Doctor> getAllDoctors() {
-        return doctorService.getAllDoctors();
+        return service.getAllDoctors();
     }
 
     @PostMapping
     public Doctor addDoctor(@RequestBody Doctor doctor) {
-        return doctorService.saveDoctor(doctor);
+        return service.saveDoctor(doctor);
+    }
+
+    @GetMapping("/availability/{user}/{doctorId}/{date}/{token}")
+    public Object getDoctorAvailability(
+            @PathVariable String user,
+            @PathVariable Long doctorId,
+            @PathVariable String date,
+            @PathVariable String token) {
+
+        if (!service.validateToken(token, user)) {
+            throw new RuntimeException("Invalid token");
+        }
+
+        return service.getDoctorAvailability(doctorId, date);
     }
 }
