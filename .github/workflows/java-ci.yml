@@ -8,23 +8,15 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
+    - uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
 
-    # If your backend is in a subfolder (important for labs)
-    - name: Change to backend directory
-      run: cd ./
-
-    # Use Maven Wrapper (required by grader)
-    - name: Build backend with Maven
-      run: ./mvnw clean compile
+    - name: Build backend
+      run: mvn clean compile

@@ -1,20 +1,32 @@
-# Use official Maven image to build the app
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# -----------------------------
+# Stage 1: Build the application
+# -----------------------------
+    FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-WORKDIR /app
-
-COPY pom.xml .
-COPY src ./src
-
-RUN mvn clean package -DskipTests
-
-# Use lightweight Java runtime
-FROM eclipse-temurin:17-jdk
-
-WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-
-EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+    # Set working directory inside container
+    WORKDIR /app
+    
+    # Copy Maven configuration and source code
+    COPY pom.xml .
+    COPY src ./src
+    
+    # Build the Spring Boot application (skip tests for speed)
+    RUN mvn clean package -DskipTests
+    
+    
+    # -----------------------------
+    # Stage 2: Run the application
+    # -----------------------------
+    FROM eclipse-temurin:17-jdk
+    
+    # Set working directory for runtime container
+    WORKDIR /app
+    
+    # Copy the generated JAR file from build stage
+    COPY --from=build /app/target/*.jar app.jar
+    
+    # Expose application port
+    EXPOSE 8080
+    
+    # Start the application
+    ENTRYPOINT ["java", "-jar", "app.jar"]

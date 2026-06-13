@@ -12,19 +12,8 @@ public class Patient {
 
     private String name;
     private String email;
-    private String password;
-    private String phone;
 
-    public Patient() {
-    }
-
-    public Patient(Long id, String name, String email, String password, String phone) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-    }
+    public Patient() {}
 
     public Long getId() {
         return id;
@@ -48,21 +37,5 @@ public class Patient {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }
