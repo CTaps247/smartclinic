@@ -13,6 +13,8 @@
     # Build the Spring Boot application (skip tests for speed)
     RUN mvn clean package -DskipTests
     
+    # Build stage: compile Spring Boot application using Maven
+    # Run stage: execute lightweight JDK runtime
     
     # -----------------------------
     # Stage 2: Run the application

@@ -1,0 +1,62 @@
+package com.smartclinic.service;
+
+import com.smartclinic.model.Patient;
+import com.smartclinic.repository.PatientRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class PatientService {
+
+    private final PatientRepository patientRepository;
+
+    public PatientService(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
+    }
+
+    // Get all patients
+    public List<Patient> getAllPatients() {
+        return patientRepository.findAll();
+    }
+
+    // Save patient
+    public Patient savePatient(Patient patient) {
+        return patientRepository.save(patient);
+    }
+
+    // REQUIRED: Patient login validation (email + password)
+    public boolean validatePatientLogin(String email, String password) {
+
+        Optional<Patient> patient = patientRepository.findByEmail(email);
+
+        return patient.isPresent() &&
+               patient.get().getPassword() != null &&
+               patient.get().getPassword().equals(password);
+    }
+
+    // REQUIRED: Get patient by email or phone (fully used logic)
+    public Patient getPatientByEmailOrPhone(String email, String phone) {
+
+        return patientRepository.findByEmailOrPhone(email, phone)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+    }
+
+    // Optional: Get patient by ID (common lab requirement)
+    public Patient getPatientById(Long id) {
+
+        return patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+                private String password;
+
+                public String getPassword() {
+                    return password;
+}
+
+                public void setPassword(String password) {
+                    this.password = password;
+}
+    }
+}
