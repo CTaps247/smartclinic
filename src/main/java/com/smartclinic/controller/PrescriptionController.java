@@ -8,6 +8,11 @@ public class PrescriptionController {
 
     @GetMapping
     public String getAllPrescriptions() {
-        return "Prescription endpoint working";
+        return "List of prescriptions endpoint working";
+    }
+
+    @PostMapping
+    public String addPrescription() {
+        return "Prescription added successfully";
     }
 }
