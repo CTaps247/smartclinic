@@ -1,9 +1,21 @@
-package com.smartclinic.service;
+@Service
+public class AppointmentService {
 
-import com.smartclinic.model.Appointment;
-import java.util.List;
+    private final AppointmentRepository repository;
 
-public interface AppointmentService {
-    List<Appointment> getAllAppointments();
-    Appointment saveAppointment(Appointment appointment);
+    public AppointmentService(AppointmentRepository repository) {
+        this.repository = repository;
+    }
+
+    public Appointment bookAppointment(Appointment appointment) {
+        return repository.save(appointment);
+    }
+
+    public List<Appointment> getAppointmentsByDoctorAndDate(
+            Long doctorId,
+            LocalDateTime appointmentDate) {
+        return repository.findByDoctorIdAndAppointmentDate(
+                doctorId,
+                appointmentDate);
+    }
 }
