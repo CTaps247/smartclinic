@@ -12,18 +12,26 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    // Load secret from application.properties or environment variable
-    @Value("${jwt.secret}")
-    private String secret;
+```
+@Value("${jwt.secret}")
+private String secret;
 
-    // Generate signing key
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
-    }
+/**
+ * Generates secure signing key from application secret.
+ * Uses HMAC SHA-based key generation for JWT signing.
+ */
+private Key getSigningKey() {
+    return Keys.hmacShaKeyFor(secret.getBytes());
+}
 
-    // Generate JWT token
-    public String generateToken(String email) {
+/**
+ * Generates a JWT token for authenticated users.
+ * @param email user email used as token subject
+ * @return signed JWT token valid for 1 hour
+ */
+public String generateToken(String email) {
 
+    try {
         long expirationTime = 1000 * 60 * 60; // 1 hour
 
         return Jwts.builder()
@@ -32,19 +40,30 @@ public class TokenService {
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
-    }
 
-    // Validate JWT token
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    } catch (Exception e) {
+        throw new RuntimeException("Error generating JWT token", e);
     }
+}
+
+/**
+ * Validates JWT token signature and expiration.
+ * @param token JWT token string
+ * @return true if valid, false otherwise
+ */
+public boolean validateToken(String token) {
+    try {
+        Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
+
+        return true;
+
+    } catch (Exception e) {
+        return false;
+    }
+}
+```
+
 }
