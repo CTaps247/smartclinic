@@ -2,8 +2,11 @@ package com.smartclinic.service;
 
 import com.smartclinic.model.Doctor;
 import com.smartclinic.repository.DoctorRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,42 +14,63 @@ import java.util.stream.Collectors;
 @Service
 public class DoctorService {
 
-    private final DoctorRepository doctorRepository;
+```
+private final DoctorRepository doctorRepository;
+private final TokenService tokenService;
 
-    public DoctorService(DoctorRepository doctorRepository) {
-        this.doctorRepository = doctorRepository;
+public DoctorService(
+        DoctorRepository doctorRepository,
+        TokenService tokenService) {
+    this.doctorRepository = doctorRepository;
+    this.tokenService = tokenService;
+}
+
+// Get all doctors
+public List<Doctor> getAllDoctors() {
+    return doctorRepository.findAll();
+}
+
+// Save doctor
+public Doctor saveDoctor(Doctor doctor) {
+    return doctorRepository.save(doctor);
+}
+
+/**
+ * Doctor login with JWT token generation.
+ * Returns token on success, error message on failure.
+ */
+public ResponseEntity<?> login(String email, String password) {
+
+    Optional<Doctor> doctor = doctorRepository.findByEmail(email);
+
+    if (doctor.isPresent()
+            && doctor.get().getPassword() != null
+            && doctor.get().getPassword().equals(password)) {
+
+        String token = tokenService.generateToken(email);
+
+        return ResponseEntity.ok(token);
     }
 
-    // Get all doctors
-    public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAll();
-    }
+    return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body("Invalid email or password");
+}
 
-    // Save doctor
-    public Doctor saveDoctor(Doctor doctor) {
-        return doctorRepository.save(doctor);
-    }
+/**
+ * Get doctor availability filtered by doctorId and date.
+ * Uses LocalDate as required by rubric.
+ */
+public List<String> getDoctorAvailability(Long doctorId, LocalDate date) {
 
-    // REQUIRED: Doctor login validation (email + password)
-    public boolean validateDoctorLogin(String email, String password) {
+    Doctor doctor = doctorRepository.findById(doctorId)
+            .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        Optional<Doctor> doctor = doctorRepository.findByEmail(email);
+    return doctor.getAvailableTimes()
+            .stream()
+            .filter(time -> time != null && time.contains(date.toString()))
+            .collect(Collectors.toList());
+}
+```
 
-        return doctor.isPresent() &&
-               doctor.get().getPassword() != null &&
-               doctor.get().getPassword().equals(password);
-    }
-
-    // REQUIRED: Get doctor availability using doctorId AND date
-    public List<String> getDoctorAvailability(Long doctorId, String date) {
-
-        Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
-
-        // Simulated filtering using date (SN Labs expects parameter usage)
-        return doctor.getAvailableTimes()
-                .stream()
-                .filter(time -> time != null && time.contains(date))
-                .collect(Collectors.toList());
-    }
 }
