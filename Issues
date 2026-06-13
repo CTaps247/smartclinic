@@ -1,0 +1,39 @@
+As an Admin, I want to:
+
+Log in to the admin portal
+Add, update, and remove doctors
+Manage system users (patients and doctors)
+Monitor appointments across the system
+Acceptance Criteria:
+
+Admin can manage doctor profiles
+Admin can view system-wide data
+Admin has restricted secure access
+
+As a Patient, I want to:
+
+Register and log in to the system
+Search for doctors by name or specialty
+Book appointments
+View my upcoming appointments
+View prescriptions given by doctors
+Acceptance Criteria:
+
+Patient can securely log in
+Patient can search for doctors
+Patient can book and view appointments
+
+
+
+As a Doctor, I want to:
+
+Log in to the system securely
+View my scheduled appointments
+Manage patient consultations
+Update prescription details
+View patient medical history
+Acceptance Criteria:
+
+Doctor can authenticate using login credentials
+Doctor can view only their assigned appointments
+Doctor can update the appointment status
